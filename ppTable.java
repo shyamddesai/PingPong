@@ -2,16 +2,16 @@ package ppPackage;
 
 import static ppPackage.ppSimParams.*;
 import java.awt.Color;
+import acm.graphics.GPoint;
 import acm.graphics.GRect;
 import acm.program.GraphicsProgram;
 
 public class ppTable {
 
-	//Constructor; Adds right, left, and ground lines to the GraphicsProgram using the makeLine() method
+	//Constructor; Adds left and ground lines to the GraphicsProgram using the makeLine() method
 	public ppTable(GraphicsProgram GProgram) {
 		GProgram.add(makeLine(0, HEIGHT, WIDTH+OFFSET, 2, Color.BLACK));	//Ground line starting at HEIGHT pixels from top to bottom
 		GProgram.add(makeLine(XwallL*Xs, 0, 2, HEIGHT, Color.BLUE));	//Left wall line
-		GProgram.add(makeLine(XwallR*Xs, 0, 2, HEIGHT, Color.RED));	//Right wall line
 	}
 	
 	/**
@@ -28,5 +28,39 @@ public class ppTable {
 		Line.setColor(color);
 		Line.setFilled(true);		
 		return Line;
+	}
+	
+	/**
+	 * Method to convert from world to screen coordinates.
+	 * @param P - A point object in world coordinates
+	 * @return p - The corresponding point object in screen coordinates
+	 * @author F.P. Ferrie
+	 * Credit: F2021-Assignment1 Solution
+	 */
+	public GPoint W2S (GPoint P) {
+		double X = P.getX();
+		double Y = P.getY();
+		
+		double x = (X-Xmin)*Xs;
+		double y = ymax - (Y-Ymin)*Ys;
+		
+		return new GPoint(x,y);		
+	}
+	
+	/**
+	 * Method to convert from screen to world coordinates.
+	 * @param P -  A point object in screen coordinates
+	 * @return p - The corresponding point object in world coordinates
+	 * @author K. Poulin 
+	 *Credit: F2021 - Tutorial 6
+	 */
+	public GPoint S2W (GPoint P) {
+		double ScrX = P.getX();
+		double ScrY = P.getY();
+		
+		double Xw = ScrX/Xs + Xmin;
+		double Yw = (ymax - ScrY)/Ys + Ymin;
+		
+		return new GPoint(Xw, Yw);
 	}
 }
