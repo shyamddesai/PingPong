@@ -1,6 +1,11 @@
 package ppPackage;
 
+import javax.swing.JToggleButton;
+
 public class ppSimParams {
+	
+	//Toggle Button
+	public static JToggleButton traceButton;
 
 	// 1. Parameters defined in screen coordinates (pixels, acm coordinates)
 	public static final int WIDTH = 1280; // n.b. screen coordinates
@@ -43,10 +48,12 @@ public class ppSimParams {
 	static final double ppPaddleXinit = XwallR-ppPaddleW/2; // Initial Paddle X 
 	static final double ppPaddleYinit = Yinit; // Initial Paddle Y
 	static final double ppPaddleXgain = 2.0; // Vx gain on paddle hit
-	static final double ppPaddleYgain = 1.5; // Vy gain on paddle hit
-	
-	//A3-5 Modification
-	//static final double ppPaddleYgain = 1.0; // Vy gain on paddle hit
+	static final double ppPaddleYgain = 2.0; // Vy gain on paddle hit
+	static final double LPaddleXinit = XwallL-ppPaddleW/2; // Initial PaddleAgent X 
+	static final double LPaddleYinit = Yinit; // Initial PaddleAgent Y
+	static final double LPaddleXgain = 2.0; // Vx gain on paddle agent hit
+	static final double LPaddleYgain = 2.0; // Vy gain on paddle agent hit
+	static final double VoxMAX = 5.0; //Maximum Vx gain on the paddle
 	
 	// 5. Parameters used by the ppSim class
 	static final double YinitMAX = 0.75*Ymax; // Max inital height at 75% of range 
@@ -61,6 +68,6 @@ public class ppSimParams {
 	
 	// 6. Miscellaneous
 	public static final boolean DEBUG = false; // Debug msg. and single step if true 
-	public static final boolean MESG = true; // Enable status messages on console 
+	public static final boolean MESG = true; // Turn on status messages on console 
 	public static final int STARTDELAY = 1000; // Delay between setup and start
 }

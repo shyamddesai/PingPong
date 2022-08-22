@@ -1,18 +1,20 @@
 package ppPackage;
 
+import static ppPackage.ppSimParams.*;
 import acm.graphics.GPoint;
 import acm.graphics.GRect;
-import static ppPackage.ppSimParams.*;
 import java.awt.Color;
 import acm.program.GraphicsProgram;
 
 public class ppPaddle extends Thread {
 	
 	//Instance variables
-	double X, Y, Vx, Vy;
-	GRect myPaddle;
-	ppTable myTable;
-	GraphicsProgram GProgram;
+	double X, Y, Vx, Vy; //Paddle X and Y positions, and X and Y velocities respectively
+	GRect myPaddle; //GRect implements paddle
+	Color myColor; //Color of ball
+	ppTable myTable; //Link to ppTable instance
+	GraphicsProgram GProgram; //Link to display instance
+	ppScoreboard myScore;
 	
 	/**
 	 * The constructor for the ppPaddle class copies parameters to instance variables. 
@@ -23,31 +25,33 @@ public class ppPaddle extends Thread {
 	 * @param myTable- A reference to the ppTable class which creates ground and wall lines, and has the W2S and S2W methods
 	 * @param GProgram - A reference to the ppSim class used to manage the display
 	 */
-	public ppPaddle (double X, double Y, ppTable myTable, GraphicsProgram GProgram) {
+	public ppPaddle (double X, double Y, Color myColor, ppTable myTable, GraphicsProgram GProgram, ppScoreboard myScore) {
 		this.X = X;
 		this.Y = Y;
+		this.myColor = myColor;
 		this.myTable = myTable;
 		this.GProgram = GProgram;
+		this.myScore = myScore;
+		
 		this.Vx = 0;
 		this.Vy = 0;
 		
-		//upperLeftX and upperLeftY are in world coordinates
+		// Create screen display for paddle; upperLeftX and upperLeftY are in world coordinates
 		double upperLeftX = X - ppPaddleW/2;
 		double upperLeftY = Y + ppPaddleH/2;
 		GPoint p = myTable.W2S(new GPoint(upperLeftX, upperLeftY));  //p is in screen coordinates
 		
-		//ScrX and ScrY are in screen coordinates
-		double ScrX = p.getX();
+		double ScrX = p.getX(); 
 		double ScrY = p.getY();
-		this.myPaddle = new GRect(ScrX, ScrY, ppPaddleW*Xs, ppPaddleH*Ys);
+		myPaddle = new GRect(ScrX, ScrY, ppPaddleW*Xs, ppPaddleH*Ys);
 		myPaddle.setFilled(true);
-		myPaddle.setColor(Color.BLACK);
+		myPaddle.setColor(myColor);
 		GProgram.add(myPaddle);
 	}
 	
 	/**
 	 * The ppPaddle run() continuously updates the paddle velocity based on the 
-	 * user's mouse movements updating the paddle position.
+	 * user's mouse movements updating the paddle position and velocity.
 	 */
 	public void run() {
 		double lastX = X;
@@ -58,8 +62,18 @@ public class ppPaddle extends Thread {
 			Vy=(Y-lastY)/TICK; 
 			lastX=X;
 			lastY=Y;
-			GProgram.pause(TICK*TSCALE); //Time (ms)
+			GProgram.pause(myScore.getTimeDelay()); //Time (ms)
 		}
+	}
+	
+	/**
+	 * Method that checks if true if ppBall touches ppPaddle 
+	 * @param Sx - X-coordinate of contacting surface
+	 * @param Sy - Y-coordinate of contacting surface
+	 * @return true (if ppBall object touches ppPaddle object) 
+	 */
+	public boolean contact (double Sx, double Sy) {
+		return((Sy>=Y - ppPaddleH/2) && (Sy<=Y+ppPaddleH/2));
 	}
 	
 	/**
@@ -87,7 +101,7 @@ public class ppPaddle extends Thread {
 				
 		double ScrX = p.getX();
 		double ScrY = p.getY();
-		this.myPaddle.setLocation(ScrX, ScrY);
+		myPaddle.setLocation(ScrX, ScrY);
 	}
 
 	/**
@@ -103,19 +117,7 @@ public class ppPaddle extends Thread {
 	 * @return -1 (if Vy is downward)
 	 */
 	public double getSgnVy() {
-		if(Vy<0) return -1;
-		else return 1; //if Vy>0
-	}
-	
-	/**
-	 * Method called in the ppBall class that's true if the ppBall is in range of ppPaddle, else false 
-	 * @param Sx - X-coordinate of the ppBall object
-	 * @param Sy - Y-coordinate of the ppBall object
-	 * @return true (if ppBall object touches ppPaddle object) 
-	 */
-	public boolean contact (double Sx, double Sy) {
-		return((Sy>=Y - ppPaddleH/2) && (Sy<=Y+ppPaddleH/2));
+		if(Vy<0) return -1.0;
+		else return 1.0; //if Vy>0
 	}
 }
-
-
